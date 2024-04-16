@@ -123,10 +123,20 @@ endif
 
 str%nht=5
 if (str%MP_PHYSICS==9) str%nht=6
+if (str%MP_PHYSICS==18) str%nht=6
 if (str%MP_PHYSICS==30) str%nht=6 !added by oue 2017/07/17 for ICON
 if (str%MP_PHYSICS==40) str%nht=8 !added by oue 2017/07/21 for RAMS
 if (str%MP_PHYSICS==50) str%nht=6 !added by DW  2017/10/30 for P3
 if (str%MP_PHYSICS==70) str%nht=2 !added by oue 2018 April, for SAM warm bin
+
+! hack to read optional input for model name: WRF, CM1, SAM, RAMS, etc.
+! If none, default is WRF
+read(id,'(a)') inputline
+if ( inputline(1:1).ne.'#' ) then
+  read(inputline,'(a)') str%ModelName
+else
+  str%ModelName = 'WRF'
+endif
 !
 inputline='#'
 do while (inputline(1:1).eq.'#')
@@ -327,12 +337,14 @@ str%WRF_MP_PHYSICS_20_InputFiles(4)=Trim(str%path_back_scatt_libs)//"../SBM_20/t
 endif
 
 !==========================================================
-!- Massages added by oue April 2018
+!- Messages added by oue April 2018
      if (str%MP_PHYSICS==8) then
 write(*,*) 'Selected microphysics: 8 (WRF Thompson bulk moment)'
 else if (str%MP_PHYSICS==9) then
 write(*,*) 'Selected microphysics: 9 (WRF Milbranndt-Yau)'
 if(str%snow_spherical==0) write(*,*) ' Non spherical snow'
+else if (str%MP_PHYSICS==18) then
+write(*,*) 'Selected microphysics: 18 (WRF NSSL-2M)'
 else if (str%MP_PHYSICS==10) then
 write(*,*) 'Selected microphysics: 10 (WRF Morrison 2 moment)'
 if(str%MP10HailOption==1) write(*,*) ' Use hail instead of graupel'
